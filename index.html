@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard — Buena Cosecha Editora</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --negro: #000;
+      --fucsia: #ED3896;
+      --fucsia2: #c4206e;
+      --blanco: #fff;
+      --g1: #0f0f0f;
+      --g2: #1a1a1a;
+      --g3: #2a2a2a;
+      --g4: #444;
+      --g5: #888;
+      --g6: #ccc;
+      --contenido: #60a5fa;
+      --presentacion: #ED3896;
+      --cta: #4ade80;
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: var(--negro);
+      color: var(--blanco);
+      font-size: 15px;
+      line-height: 1.6
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 220px 1;
+      min-height: 100vh
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      background: var(--g1);
+      border-right: 1px solid var(--g3);
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 0;
+      overflow-y: auto;
+      z-index: 10
+    }
+
+    .sidebar-logo {
+      padding: 0 24px 28px;
+      border-bottom: 1px solid var(--g3);
+      margin-bottom: 24px
+    }
+
+    .sidebar-logo .brand {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      text-transform: uppercase
+    }
+
+    .sidebar-logo .brand span {
+      color: var(--fucsia)
+    }
+
+    .sidebar-logo .sub {
+      font-family: 'Arial', sans-serif;
+      font-size: 10px;
+      color: var(--g5);
+      margin-top: 4px
+    }
+
+    .sidebar-section {
+      font-family: 'Arial', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--g4);
+      padding: 0 24px;
+      margin-bottom: 8px
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      margin-bottom: 28px
+    }
+
+    .sidebar-nav li {}
+
+    .sidebar-nav a {
+      display: block;
+      padding: 8px 24px;
+      font-family: 'Arial', sans-serif;
+      font-size: 13px;
+      color: var(--g5);
+      text-decoration: none;
+      transition: all .15s;
+      border-left: 2px solid transparent
+    }
+
+    .sidebar-nav a:hover {
+      color: var(--blanco);
+      background: var(--g2)
+    }
+
+    .sidebar-nav a.active {
+      color: var(--blanco);
+      border-left-color: var(--fucsia);
+      background: var(--g2)
+    }
+
+    .sidebar-count {
+      display: inline-block;
+      background: var(--g3);
+      color: var(--g5);
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-left: 6px;
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* ── Main ── */
+    .main {
+      margin-left: 220px;
+      padding: 40px 48px;
+      min-height: 100vh
+    }
+
+    /* ── Header ── */
+    .page-header {
+      margin-bottom: 40px
+    }
+
+    .page-header h1 {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -.01em;
+      margin-bottom: 6px
+    }
+
+    .page-header p {
+      font-size: 14px;
+      color: var(--g5);
+      font-style: italic
+    }
+
+    /* ── Views ── */
+    .view {
+      display: none
+    }
+
+    .view.active {
+      display: block
+    }
+
+    /* ── Stats ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--g3);
+      margin-bottom: 40px
+    }
+
+    .stat-card {
+      background: var(--g1);
+      padding: 24px 20px
+    }
+
+    .stat-n {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 32px;
+      color: var(--fucsia);
+      line-height: 1
+    }
+
+    .stat-l {
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      letter-spacing: .08em;
+      color: var(--g5);
+      margin-top: 4px;
+      text-transform: uppercase
+    }
+
+    /* ── Filtros ── */
+    .filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+      flex-wrap: wrap
+    }
+
+    .filter-btn {
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      background: var(--g2);
+      color: var(--g5);
+      border: 1px solid var(--g3);
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .filter-btn:hover {
+      color: var(--blanco);
+      border-color: var(--g5)
+    }
+
+    .filter-btn.active {
+      background: var(--fucsia);
+      color: var(--blanco);
+      border-color: var(--fucsia)
+    }
+
+    /* ── Post Grid ── */
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2px;
+    }
+
+    .post-card {
+      background: var(--g1);
+      padding: 28px 24px;
+      cursor: pointer;
+      transition: background .15s;
+      border-left: 3px solid transparent
+    }
+
+    .post-card:hover {
+      background: var(--g2)
+    }
+
+    .post-card.contenido {
+      border-left-color: var(--contenido)
+    }
+
+    .post-card.presentacion {
+      border-left-color: var(--presentacion)
+    }
+
+    .post-card.cta {
+      border-left-color: var(--cta)
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px
+    }
+
+    .tipo-badge {
+      font-family: 'Arial', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: 3px 8px
+    }
+
+    .tipo-badge.contenido {
+      background: rgba(96, 165, 250, .12);
+      color: var(--contenido)
+    }
+
+    .tipo-badge.presentacion {
+      background: rgba(237, 56, 150, .12);
+      color: var(--presentacion)
+    }
+
+    .tipo-badge.cta {
+      background: rgba(74, 222, 128, .12);
+      color: var(--cta)
+    }
+
+    .card-date {
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      color: var(--g4)
+    }
+
+    .card-hora {
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      color: var(--g4);
+      margin-left: auto
+    }
+
+    .card-title {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 14px;
+      text-transform: uppercase;
+      line-height: 1.2;
+      margin-bottom: 8px
+    }
+
+    .card-libro {
+      font-size: 12px;
+      font-style: italic;
+      color: var(--fucsia);
+      margin-bottom: 10px
+    }
+
+    .card-preview {
+      font-size: 13px;
+      color: var(--g5);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--g3)
+    }
+
+    .card-tags-count {
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      color: var(--g4)
+    }
+
+    .card-arrow {
+      margin-left: auto;
+      color: var(--g4);
+      font-size: 12px;
+      font-family: 'Arial', sans-serif
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .85);
+      z-index: 100;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .modal {
+      background: var(--g1);
+      width: min(680px, 95vw);
+      height: 100vh;
+      overflow-y: auto;
+      padding: 40px;
+      transform: translateX(40px);
+      transition: transform .25s;
+      border-left: 1px solid var(--g3)
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateX(0)
+    }
+
+    .modal-close {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--g5);
+      cursor: pointer;
+      margin-bottom: 32px;
+      background: none;
+      border: none;
+      padding: 0
+    }
+
+    .modal-close:hover {
+      color: var(--blanco)
+    }
+
+    .modal-type-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px
+    }
+
+    .modal-title {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 22px;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 8px
+    }
+
+    .modal-libro {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--fucsia);
+      margin-bottom: 4px
+    }
+
+    .modal-fecha {
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+      color: var(--g5);
+      margin-bottom: 28px
+    }
+
+    .modal-section {
+      margin-bottom: 32px
+    }
+
+    .modal-section-label {
+      font-family: 'Arial', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--fucsia);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px
+    }
+
+    .modal-section-label::before {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 1px;
+      background: var(--fucsia)
+    }
+
+    .caption-box {
+      background: var(--g2);
+      padding: 24px;
+      font-size: 14px;
+      line-height: 1.9;
+      white-space: pre-wrap;
+      color: var(--g6)
+    }
+
+    .caption-short {
+      background: var(--g2);
+      padding: 16px 20px;
+      font-size: 13px;
+      font-style: italic;
+      color: var(--g5);
+      line-height: 1.7;
+      margin-top: 2px
+    }
+
+    .hashtag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px
+    }
+
+    .hashtag {
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+      color: #5b8fff;
+      background: rgba(91, 143, 255, .08);
+      padding: 4px 10px
+    }
+
+    .stories-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .story-item {
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--g5);
+      line-height: 1.6
+    }
+
+    .story-n {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 11px;
+      color: var(--fucsia);
+      flex-shrink: 0;
+      padding-top: 2px
+    }
+
+    .brief-grid {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 0;
+      background: var(--g3)
+    }
+
+    .brief-key {
+      background: var(--g2);
+      padding: 12px 14px;
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--g4)
+    }
+
+    .brief-val {
+      background: var(--g1);
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--g5);
+      line-height: 1.5
+    }
+
+    .dalle-box {
+      background: var(--g2);
+      padding: 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--g5);
+      line-height: 1.7
+    }
+
+    .copy-btn {
+      font-family: 'Arial', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: var(--g3);
+      color: var(--g5);
+      border: none;
+      padding: 8px 14px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all .15s;
+      display: inline-block
+    }
+
+    .copy-btn:hover {
+      background: var(--g4);
+      color: var(--blanco)
+    }
+
+    .copy-btn.copied {
+      background: var(--fucsia);
+      color: var(--blanco)
+    }
+
+    /* ── Planes ── */
+    .plan-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: var(--g3)
+    }
+
+    .plan-card {
+      background: var(--g1);
+      padding: 28px 32px;
+      cursor: pointer;
+      transition: background .15s;
+      display: flex;
+      align-items: center;
+      gap: 20px
+    }
+
+    .plan-card:hover {
+      background: var(--g2)
+    }
+
+    .plan-icon {
+      font-size: 24px;
+      flex-shrink: 0
+    }
+
+    .plan-info h3 {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 15px;
+      text-transform: uppercase;
+      margin-bottom: 4px
+    }
+
+    .plan-info p {
+      font-size: 13px;
+      color: var(--g5);
+      font-style: italic
+    }
+
+    .plan-arrow {
+      margin-left: auto;
+      font-family: 'Arial', sans-serif;
+      font-size: 12px;
+      color: var(--g4)
+    }
+
+    /* ── Plan modal ── */
+    .plan-content {
+      font-size: 13px;
+      line-height: 1.9;
+      color: var(--g6)
+    }
+
+    .plan-content h1,
+    .plan-content h2 {
+      font-family: 'Arial Black', sans-serif;
+      text-transform: uppercase;
+      color: var(--blanco);
+      margin: 24px 0 10px;
+      font-size: 16px
+    }
+
+    .plan-content h3 {
+      font-family: 'Arial', sans-serif;
+      font-weight: 700;
+      color: var(--fucsia);
+      font-size: 13px;
+      margin: 16px 0 6px;
+      letter-spacing: .06em
+    }
+
+    .plan-content p {
+      margin-bottom: 10px;
+      color: var(--g6)
+    }
+
+    .plan-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0
+    }
+
+    .plan-content td,
+    .plan-content th {
+      padding: 10px 12px;
+      border: 1px solid var(--g3);
+      font-size: 12px;
+      text-align: left
+    }
+
+    .plan-content th {
+      background: var(--g2);
+      font-family: 'Arial', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: .1em;
+      color: var(--g5)
+    }
+
+    .plan-content blockquote {
+      border-left: 2px solid var(--fucsia);
+      padding-left: 16px;
+      color: var(--g5);
+      font-style: italic;
+      margin: 12px 0
+    }
+
+    .plan-content ul,
+    .plan-content ol {
+      padding-left: 20px;
+      margin-bottom: 10px
+    }
+
+    .plan-content li {
+      margin-bottom: 4px;
+      color: var(--g5)
+    }
+
+    .plan-content code {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      background: var(--g2);
+      color: var(--fucsia);
+      padding: 1px 6px
+    }
+
+    .plan-content em,
+    .plan-content i {
+      color: var(--g6)
+    }
+
+    .plan-content hr {
+      border: none;
+      border-top: 1px solid var(--g3);
+      margin: 20px 0
+    }
+
+    /* ── Empty state ── */
+    .empty {
+      padding: 60px 40px;
+      text-align: center;
+      color: var(--g4);
+      font-style: italic
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-logo">
+        <div class="brand">Buena Cosecha <span>Editora</span></div>
+        <div class="sub">Dashboard de contenido</div>
+      </div>
+
+      <div class="sidebar-section">Vistas</div>
+      <ul class="sidebar-nav">
+        <li><a href="#" class="active" data-view="posts">Posts <span class="sidebar-count" id="count-posts">0</span></a>
+        </li>
+        <li><a href="#" data-view="planes">Planes <span class="sidebar-count" id="count-planes">0</span></a></li>
+      </ul>
+
+      <div class="sidebar-section">Tipo de post</div>
+      <ul class="sidebar-nav" id="filter-nav">
+        <li><a href="#" class="filter-link active" data-filter="todos">Todos</a></li>
+        <li><a href="#" class="filter-link" data-filter="contenido">📖 Contenido</a></li>
+        <li><a href="#" class="filter-link" data-filter="presentacion">📣 Presentación</a></li>
+        <li><a href="#" class="filter-link" data-filter="cta">🛒 CTA</a></li>
+      </ul>
+    </nav>
+
+    <!-- Main -->
+    <main class="main">
+
+      <!-- Posts view -->
+      <div class="view active" id="view-posts">
+        <div class="page-header">
+          <h1>Posts generados</h1>
+          <p>Hacé clic en cualquier post para ver el contenido completo.</p>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-n" id="stat-total">0</div>
+            <div class="stat-l">Posts totales</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-n" id="stat-contenido" style="color:var(--contenido)">0</div>
+            <div class="stat-l">Contenido</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-n" id="stat-presentacion" style="color:var(--presentacion)">0</div>
+            <div class="stat-l">Presentación</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-n" id="stat-cta" style="color:var(--cta)">0</div>
+            <div class="stat-l">CTA</div>
+          </div>
+        </div>
+
+        <div class="posts-grid" id="posts-grid"></div>
+        <div class="empty" id="posts-empty" style="display:none">No hay posts en este filtro.</div>
+      </div>
+
+      <!-- Planes view -->
+      <div class="view" id="view-planes">
+        <div class="page-header">
+          <h1>Planes de contenido</h1>
+          <p>Calendarios mensuales generados.</p>
+        </div>
+        <div class="plan-list" id="plan-list"></div>
+        <div class="empty" id="planes-empty" style="display:none">No hay planes generados todavía.</div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal post -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" id="modal-content">
+      <button class="modal-close" onclick="closeModalDirect()">← Cerrar</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+    // ── Data ─────────────────────────────────────────────────────────────────────
+    const POSTS = [
+      {
+        "id": "2026-03-23_lanzamiento-13-cuentos-diminutos",
+        "title": "Lanzamiento 13 cuentos diminutos",
+        "tipo": "📣 Presentación",
+        "fecha_iso": "2026-03-23",
+        "fecha_human": "23 de marzo de 2026",
+        "hora": "Viernes 19-20hs",
+        "libro": "",
+        "caption": "Hay libros que se leen de un tirón y hay libros que se leen de a poco, saboreando cada página.\n\n*13 cuentos diminutos* de Mario Méndez es de los segundos — aunque cada historia dura apenas un instante. ✨\n\nSon cuentos que caben en la palma de la mano pero que se quedan dando vueltas mucho después de la última línea. Mario Méndez hace algo que parece simple y no lo es: agarrar un momento, una imagen, una sensación, y convertirla en cuento. Sin una palabra de más.\n\nUn libro ideal para leer en el colectivo, entre reuniones, antes de dormir. Para regalar a alguien que dice que no tiene tiempo de leer. Para descubrir que la microficción no es literatura de apuro — es literatura de precisión.\n\nLo conseguís en nuestra tienda 🔗 link en bio.\n\n¿Ya conocían la obra de Mario Méndez? Contanos en los comentarios. 📖",
+        "caption_corto": "13 cuentos que caben en la palma de la mano pero que se quedan dando vueltas mucho después.\n\n*13 cuentos diminutos* — Mario Méndez, por @buena.cosecha.editora 🔗 link en bio.",
+        "hashtags": [
+          "#buenacosechaeditora",
+          "#editorialindependiente",
+          "#librosargentinos",
+          "#literaturaargentina",
+          "#cuentosargentinos",
+          "#narracionargentina",
+          "#literaturaindie",
+          "#librosrecomendados",
+          "#lectores",
+          "#leer",
+          "#amantesdelalectura",
+          "#literaturalatinoamericana",
+          "#microficcion",
+          "#cuentosbreves",
+          "#mariomendez",
+          "#13cuentosdiminutos",
+          "#lij",
+          "#buenosaires",
+          "#librosbsas",
+          "#culturabsas"
+        ],
+        "stories": [
+          "**Cuenta regresiva tipográfica** — Una Story por cuento: compartir el título o la primera línea de cada uno de los 13 cuentos, una por una durante el día. Terminar con la tapa del libro y el link a la",
+          "**Encuesta interactiva** — \"¿Cuántas páginas necesita un cuento para atraparte?\" con opciones tipo \"1\", \"5\", \"no importa si está bien escrito\". Ideal para calentar la conversación antes del post.",
+          "**Repost del caption corto** — La versión condensada del caption como texto sobre fondo crema #F5EDD6, con la tapa pequeña en esquina. Sticker de link directo a la tienda."
+        ],
+        "canva_brief": {},
+        "dalle_prompt": "",
+        "folder": "posteo-prueba\\2026-03-23_lanzamiento-13-cuentos-diminutos"
+      },
+      {
+        "id": "2026-05-07_oficios-varios-presentacion-autores",
+        "title": "*Oficios varios* · Presentación autores",
+        "tipo": "📣 Presentación",
+        "fecha_iso": "2026-05-07",
+        "fecha_human": "7 de mayo de 2026",
+        "hora": "20:00 hs",
+        "libro": "",
+        "caption": "**Fecha sugerida**: Jueves 7 de mayo de 2026\n\n\n\n¿Alguna vez te preguntaste qué pasa del otro lado del mostrador?\n\nNo lo que hacen —eso ya lo sabés— sino lo que sienten, lo que no le cuentan a nadie, lo que se llevan a casa sin querer.\n\n*Oficios varios* reúne diez relatos y crónicas escritos por los protagonistas de cada historia. La ginecóloga que surfea sus propios sentimientos entre consulta y consulta. El librero que lleva el vicio al hombro. La meteoróloga que toma una decisión que va más allá de las ciencias exactas. La continuista indispensable en el set. El técnico de cable que abre puertas y no siempre puede olvidar lo que encuentra del otro lado.\n\nDiez voces, diez oficios, un lado B que no viene en el manual.\n\nLos textos son de @noesdeverdad, @mistercarrra, @juanstanisci, @lu.vill",
+        "caption_corto": "",
+        "hashtags": [
+          "#buenacosechaeditora",
+          "#editorialindependiente",
+          "#librosargentinos",
+          "#literaturaindie",
+          "#literaturaargentina",
+          "#cronicasargentinas",
+          "#narracionargentina",
+          "#amantesdelalectura",
+          "#oficiosvarios",
+          "#antologiabuenacosecha",
+          "#oficios",
+          "#relatosreales",
+          "#cronicas",
+          "#trabajos",
+          "#buenosaires",
+          "#librosbsas",
+          "#culturabsas"
+        ],
+        "stories": [
+          "**Formato**: Fondo con color de tapa (verde lima `#7EC640`) + sticker de pregunta",
+          "**Formato**: Secuencia de 3-4 slides. Cada slide: nombre de un oficio (ej: \"LA METEORÓLOGA\") + los 10 handles listados abajo + sticker de encuesta con 2 opciones (dos nombres posibles).",
+          "**Texto**:"
+        ],
+        "canva_brief": {},
+        "dalle_prompt": "",
+        "folder": "2026-05-07_oficios-varios-presentacion-autores"
+      },
+      {
+        "id": "2026-05-05_oficios-varios-lado-b",
+        "title": "Oficios varios · Lado B · 5 mayo 2026",
+        "tipo": "📖 Contenido",
+        "fecha_iso": "2026-05-05",
+        "fecha_human": "5 de mayo de 2026",
+        "hora": "",
+        "libro": "Oficios varios",
+        "caption": "**Fecha sugerida**: Martes 5 de mayo · 19:30 hs\n\n\n\nUn técnico de cable entra a miles de casas en su vida.\n\nVe habitaciones que nadie ordenó para recibir visitas.\nEscucha conversaciones que nadie pensó que escucharía alguien.\nCarga con imágenes que no puede borrar.\n\nEse es el lado B de los oficios.\nEl que no aparece en el contrato, ni en la descripción del puesto, ni en ninguna nota de prensa.\n\n*Oficios varios* es una antología con diez relatos escritos por quienes los vivieron desde adentro: un librero, una ginecóloga, una meteoróloga, una continuista de cine, una psicóloga, una peluquera.\n\nNo como expertos. Como testigos.\n\nEsta semana arrancamos con esta antología porque ayer fue el Día del Trabajador.\nY si hay algo que los trabajadores saben mejor que nadie, es todo lo que nadie ve.\n\n¿Cu",
+        "caption_corto": "El lado B de los oficios no aparece en ningún contrato.\n*Oficios varios* lo cuenta desde adentro — diez voces, diez trabajos, diez historias reales.\n\n---",
+        "hashtags": [
+          "#buenacosechaeditora",
+          "#editorialindependiente",
+          "#librosargentinos",
+          "#literaturaargentina",
+          "#cuentosargentinos",
+          "#cronicasargentinas",
+          "#antologia",
+          "#narracionargentina",
+          "#amantesdelalectura",
+          "#lectores",
+          "#oficiosvarios",
+          "#antologiabuenacosecha",
+          "#oficios",
+          "#relatosreales",
+          "#diadeltrabajador",
+          "#trabajadores",
+          "#ladob",
+          "#buenosaires",
+          "#culturabsas",
+          "#librosbsas"
+        ],
+        "stories": [
+          "**Cuándo**: mismo día que el post (martes 5, tarde)",
+          "**Cuándo**: miércoles 6 (al día siguiente, como continuación)",
+          "**Cuándo**: jueves 7 (el día del segundo post de la semana)"
+        ],
+        "canva_brief": {},
+        "dalle_prompt": "",
+        "folder": "2026-05-05_oficios-varios-lado-b"
+      },
+      {
+        "id": "2026-04-14_dos-tardes-con-trini-fragmento",
+        "title": "Dos tardes con Trini · Contenido",
+        "tipo": "📖 Contenido",
+        "fecha_iso": "2026-04-14",
+        "fecha_human": "14 de abril de 2026",
+        "hora": "19:30 hs",
+        "libro": "Dos tardes con Trini* — Mario Méndez",
+        "caption": "Hay personas que no terminan de irse.\n\nNo por rencor. Simplemente quedaron ahí, en algún rincón — testigos de quien eras antes de ser quien sos.\n\n*Dos tardes con Trini* arranca con un cruce de los que pasan sin avisar: Francisco y Trini, la puerta de un bar, una tarde cualquiera. Lo que sigue es un río de memoria que Mario Méndez construye con precisión: una villa popular, un maestro que no se olvida, romances que no llegaron a ser, la violencia que siempre rondaba, la muerte que aparece en cada esquina sin pedir permiso.\n\nNo es nostalgia. Es algo más específico: el intento de entender cómo alguien se convierte en lo que terminó siendo.\n\n96 páginas. Un caleidoscopio sin puntos ciegos.\n\nSi en tu vida hay alguien así — ese o esa que sabe de dónde venís — este libro lo conoce. 📖\n\nLo conseguís en la tienda (link en bio).",
+        "caption_corto": "Hay personas que no terminan de irse — testigos de quien eras antes de ser quien sos.\n\n*Dos tardes con Trini*, de Mario Méndez. En nuestra tienda. 📖\n\n---",
+        "hashtags": [
+          "#buenacosechaeditora",
+          "#editorialindependiente",
+          "#librosargentinos",
+          "#literaturaargentina",
+          "#narrativaargentina",
+          "#literaturaindie",
+          "#lectores",
+          "#leer",
+          "#librosrecomendados",
+          "#amantesdelalectura",
+          "#dostardescontrini",
+          "#mariomendez",
+          "#memoriaurbana",
+          "#amistades",
+          "#barrio",
+          "#novelaargentina",
+          "#narrativa",
+          "#buenosaires",
+          "#librosbsas",
+          "#culturabsas",
+          "#literaturaporteña"
+        ],
+        "stories": [
+          "**Placa + pregunta**: Texto \"Hay personas que no terminan de irse\" sobre fondo azul oscuro, con sticker de pregunta abierta: \"¿Tenés una persona así?\" — Repostear las mejores respuestas el día siguien",
+          "**Carrusel de 2 slides**: Slide 1 — tapa del libro sobre mesa de bar o banco de plaza, luz de tarde. Slide 2 — \"96 páginas. Un caleidoscopio sin puntos ciegos.\" + link en bio.",
+          "**Detrás de escena editorial**: Foto del libro físico recién llegado de imprenta con texto superpuesto: \"El segundo lanzamiento de abril ya está en la tienda.\""
+        ],
+        "canva_brief": {},
+        "dalle_prompt": "",
+        "folder": "2026-04-14_dos-tardes-con-trini-fragmento"
+      },
+      {
+        "id": "2026-04-11_post-para-el-lanzamiento-de-dos-tardes-c",
+        "title": "Post para el lanzamiento de Dos tardes con Trini",
+        "tipo": "📣 Presentación",
+        "fecha_iso": "2026-04-11",
+        "fecha_human": "11 de abril de 2026",
+        "hora": "Jueves 19-20hs",
+        "libro": "",
+        "caption": "Una tarde cualquiera. Una puerta de bar. Un encuentro que no buscabas.\n\nY de golpe, todo lo que creías que estaba guardado vuelve.\n\n✦\n\n*Dos tardes con Trini* es la nueva novela de Mario Méndez, y en sus 96 páginas pasan muchas vidas: una villa popular, un maestro que no se olvida, romances que no llegaron a ser, la violencia que siempre rondaba cerca, y la muerte que aparece en cada esquina sin pedir permiso.\n\nFrancisco y Trini se reencuentran en la puerta del bar La Academia. Lo que empieza como un cruce fortuito se convierte en un río de memoria que no para.\n\nMario Méndez teje un collar de escenas y personajes suburbanos — queribles, reales, porteños hasta los huesos.\n\nSi alguna vez tuviste una persona así en tu vida —ese amigo o esa amiga que fue testigo de lo que fuiste antes de ser quien sos— este libro es para vos.\n\n📖 Ya disponible en nuestra tienda (link en bio).\n\n.\n.\n.",
+        "caption_corto": "Una tarde cualquiera. Un encuentro que no buscabas. Y de golpe, todo lo que creías guardado vuelve. 📖\n\n*Dos tardes con Trini*, la nueva novela de Mario Méndez, ya está disponible.",
+        "hashtags": [
+          "#buenacosechaeditora",
+          "#editorialindependiente",
+          "#librosargentinos",
+          "#literaturaargentina",
+          "#narrativaargentina",
+          "#narracionargentina",
+          "#literaturaindie",
+          "#leer",
+          "#lectores",
+          "#librosrecomendados",
+          "#amantesdelalectura",
+          "#novedad",
+          "#recienllego",
+          "#dostardescontrini",
+          "#mariomendez",
+          "#memoriaurbana",
+          "#amistades",
+          "#barrio",
+          "#buenosaires",
+          "#librosbsas",
+          "#culturabsas",
+          "#literaturaporteña"
+        ],
+        "stories": [
+          "Story de pregunta: '¿Tenés una persona que fue testigo de quien eras antes?' con sticker de respuestas abiertas — las mejores respuestas las reposteás el día siguiente.",
+          "Carrusel de 3 slides en Stories: slide 1 con la tapa del libro, slide 2 con una línea de la sinopsis, slide 3 con el CTA 'disponible en link en bio'.",
+          "Story tipo 'detrás de escena': foto o video de los libros recién llegados de imprenta, con texto superpuesto 'llegó Trini 🖤'."
+        ],
+        "canva_brief": {
+          "formato": "vertical 1080x1350",
+          "fondo": "Azul oscuro profundo, como la noche porteña — puede usarse la imagen DALL-E como fondo con overlay oscuro semitransparente (opacidad 50-60%)",
+          "mood": "Urbano, nocturno, evocador. Melancólico con calor humano. Porteño.",
+          "texto_principal": "Dos tardes con Trini\n\n**Tipografía**: Serif clásica (Playfair Display o Cormorant Garamond), italic, blanco puro\n**Color**: #FFFFFF con el nombre del autor en #ED3896 (fucsia)"
+        },
+        "dalle_prompt": "Moody urban night scene in Buenos Aires, a dimly lit bar entrance with worn wooden door, neon light reflections on wet cobblestones, deep blue and dark teal color palette, cinematic and melancholic atmosphere, film noir aesthetic, shallow depth of field, no people visible, no text, photorealistic style, hyper detailed, widescreen adapted to vertical crop",
+        "folder": "2026-04\\2026-04-11_post-para-el-lanzamiento-de-dos-tardes-c"
+      },
+      {
+        "id": "2026-03-25_oficios-varios-presentacion",
+        "title": "2026 03 25 oficios varios presentacion",
+        "tipo": "📣 Presentación",
+        "fecha_iso": "2026-03-25",
+        "fecha_human": "25 de marzo de 2026",
+        "hora": "",
+        "libro": "",
+        "caption": "¿Alguna vez te preguntaste qué ve un técnico de cable cuando entra a una casa?\n¿O qué siente una ginecóloga entre consulta y consulta?\n\n*Oficios varios* reúne diez relatos escritos desde adentro — en la voz de quienes viven esos trabajos todos los días. No son perfiles. No son entrevistas. Son historias.\n\nUn librero que lleva el vicio al hombro y recomienda libros vaya donde vaya.\nUna meteoróloga que toma una decisión que trasciende las ciencias exactas.\nUna continuista de cine: ¿qué es eso? ¿qué hace? ¿por qué es indispensable en un set?\nUn productor de radio que quería ser arquitecto y que construye su espacio de trabajo en su casa y viceversa.\n\nY seis oficios más, con sus anécdotas, sus mañas, sus sentires.\n\nEs el segundo libro de nuestra colección Antología 🌱 y lo escribieron diez auto",
+        "caption_corto": "",
+        "hashtags": [
+          "#buenacosechaeditora",
+          "#editorialindependiente",
+          "#librosargentinos",
+          "#literaturaargentina",
+          "#cronicasargentinas",
+          "#narracionargentina",
+          "#literaturaindie",
+          "#cuentosargentinos",
+          "#librosrecomendados",
+          "#amantesdelalectura",
+          "#editorialesindependientes",
+          "#oficiosvarios",
+          "#antologiabuenacosecha",
+          "#relatosreales",
+          "#oficios",
+          "#cronicas",
+          "#buenosaires",
+          "#librosbsas",
+          "#culturabsas"
+        ],
+        "stories": [
+          "**Formato**: Texto sobre fondo verde lima (#7EC640)",
+          "**Formato**: Pregunta con sticker de encuesta",
+          "**Formato**: Compartir el post del feed como story"
+        ],
+        "canva_brief": {
+          "formato": "Vertical 1080 x 1350 px (4:5) — mayor alcance en feed",
+          "fondo": "- Blanco / claro (el que quedó del template actual)\n- **Alternativa para más impacto**: fondo verde lima #7EC640 (el color de la tapa)",
+          "mood": "verde · enérgico · directo"
+        },
+        "dalle_prompt": "",
+        "folder": "2026-03-25_oficios-varios-presentacion"
+      },
+      {
+        "id": "2026-03-23_post_yo-y-la-noche",
+        "title": "Yo y la noche",
+        "tipo": "🛒 CTA",
+        "fecha_iso": "2026-03-23",
+        "fecha_human": "23 de marzo de 2026",
+        "hora": "",
+        "libro": "",
+        "caption": "*\"Las tres de la mañana son un idioma que solo aprenden los que no pueden dormir.\"*\n\nHay libros que no se leen de día.\n\n*Yo y la noche*, de Valentina Ríos, es uno de ellos. Un libro escrito en los márgenes del sueño, en esos minutos donde el silencio pesa demasiado y los pensamientos se vuelven precisos, casi crueles de tan claros.\n\nValentina Ríos construyó este libro en cuadernos de madrugada, durante tres años de insomnio creativo. Lo que resultó no es un lamento — es un territorio. Un lugar donde la vigilia deja de ser un problema y se convierte en una forma de ver.\n\n*\"Escribo porque de noche el silencio tiene demasiadas palabras.\"*\n\nDesde @buena.cosecha.editora apostamos por este libro porque creemos que hay lectores que lo estaban esperando sin saberlo. Lectores que también conocen ese idioma.\n\nLo conseguís en nuestra tienda — link en bio. 🌙\n\nSi conocés a alguien que lea de madrugada, mandáselo.",
+        "caption_corto": "",
+        "hashtags": [
+          "#buenacosechaeditora",
+          "#editorialindependiente",
+          "#librosargentinos",
+          "#literaturaargentina",
+          "#narracionargentina",
+          "#literaturaindie",
+          "#edicionesindependientes",
+          "#librosrecomendados",
+          "#lectores",
+          "#amantesdelalectura",
+          "#poesiaargentina",
+          "#insomnio",
+          "#escrituranocturna",
+          "#yoylanoche",
+          "#valentinarios",
+          "#novelanovedad",
+          "#buenosaires",
+          "#librosbsas",
+          "#culturabsas",
+          "#leer",
+          "#cuentos",
+          "#libros",
+          "#lecturaargentina",
+          "#literaturalatina",
+          "#nocturno"
+        ],
+        "stories": [
+          "**Formato**: Placa tipográfica, fondo negro o azul noche muy oscuro, texto en crema #F5EDD6",
+          "**Formato**: Fondo verde cosecha #4A7C59 con texto crema",
+          "**Formato**: Video corto o boomerang con el libro físico sobre mesa, luz de velador"
+        ],
+        "canva_brief": {},
+        "dalle_prompt": "",
+        "folder": "2026-03-23_post_yo-y-la-noche"
+      }
+    ];
+    const PLANS = [
+      {
+        "id": "plan-mayo-2026",
+        "title": "Mayo 2026",
+        "texto": "# Calendario de contenido — Mayo 2026\n**Buena Cosecha Editora** · @buena.cosecha.editora\n\n> Generado: 11 de abril de 2026\n> Posts: 2 por semana (martes y jueves) · Complementos: 1 por semana (story o reel)\n> Horario sugerido: 19–21 hs (pico de audiencia lectora argentina)\n\n---\n\n## Vista rápida del mes\n\n| # | Martes | Tipo | Jueves | Tipo | Complemento |\n|---|--------|------|--------|------|-------------|\n| Sem 1 | 5 may | 📖 Contenido | 7 may | 📣 Presentación | 📱 Story |\n| Sem 2 | 12 may | 📣 Presentación | 14 may | 🛒 CTA | 📱 Story |\n| Sem 3 | 19 may | 📖 Contenido | 21 may | 📖 Contenido | 🎬 Reel |\n| Sem 4 | 26 may | 🛒 CTA | 28 may | 📣 Presentación | 📱 Story |\n\n---\n\n## Semana 1 — 5 al 9 de mayo\n\n### Mar 5 · 📖 Contenido\n\n**Libro/tema**: *Oficios varios*\n**Descripción**: Cita o fragmento de uno de los relatos de la antología — el lado B de un oficio cotidiano. Conexión con el Día del Trabajador (1° de mayo, recién pasado). El gancho es: \"¿Qué pasa realmente adentro de un oficio que ves todos los días?\"\n**Nota de imagen**: Placa tipográfica. Fragmento en serif sobre fondo crema o papel kraft. Tono cálido y laboral. Sin foto de tapa (que la imagen sea la cita).\n**Hora sugerida**: 19:30 hs\n\n---\n\n### Jue 7 · 📣 Presentación\n\n**Libro/tema**: *Oficios varios*\n**Descripción**: Presentación de la antología. Destacar que son 10 autores con cuenta de Instagram — cada uno escribe sobre el lado B de su oficio. Mencionar la diversidad de voces: ginecóloga, librero, meteoróloga, continuista, etc. Invitar a adivinar cuál es cuál.\n**Nota de imagen**: Foto de tapa del libro + carrusel opcional con mini-perfil de 2 o 3 autores (nombre + oficio del que escribe). Buena oportunidad para etiquetar autores.\n**Hora sugerida**: 20:00 hs\n\n---\n\n### 📱 Story — Semana 1\n\n**Idea**: \"¿De qué trabajás? ¿Alguna vez pensaste en escribir sobre eso?\" + sticker de pregunta abierta. Redirigir a quienes respondan hacia el libro.\n\n---\n\n## Semana 2 — 12 al 16 de mayo\n\n### Mar 12 · 📣 Presentación\n\n**Libro/tema**: *Dos tardes con Trini* — Mario Méndez\n**Descripción**: Presentación narrativa del libro: un encuentro fortuito en la puerta de un bar desata el caudal de una amistad que nunca llegó a ser amor. Apelar a la memoria urbana y a \"ese alguien\" que quedó en el pasado. Tono evocador, porteño.\n**Nota de imagen**: Foto del libro en una mesa de bar o sobre un banco de plaza. Luz cálida de tarde. Si hay foto de escena urbana porteña, mejor. Estética analógica.\n**Hora sugerida**: 19:30 hs\n\n---\n\n### Jue 14 · 🛒 CTA\n\n**Libro/tema**: Catálogo general\n**Descripción**: CTA de catálogo amplio. No agresivo: \"Estos son los libros que editamos con cuidado. Si encontrás uno que te llame, lo conseguís en el link de la bio.\" Mostrar 3–4 tapas del catálogo. Ideal si hay envíos a todo el país o alguna promo vigente.\n**Nota de imagen**: Composición flat-lay con varias tapas del catálogo. Fondo neutro, buena luz. Si hay novedades recientes, que estén primeras.\n**Hora sugerida**: 20:00 hs\n\n---\n\n### 📱 Story — Semana 2\n\n**Idea**: Encuesta: \"¿Qué preferís leer en otoño?\" con dos opciones (ej: \"Narrativa urbana / Poesía\" o \"Una novela larga / Cuentos cortos\"). Humaniza la cuenta y genera interacción sin pedir nada.\n\n---\n\n## Semana 3 — 19 al 23 de mayo\n\n### Mar 19 · 📖 Contenido\n\n**Libro/tema**: *Ahora: Apocalipsis* — Daniel Mecca\n**Descripción**: Placa con un poema corto (o fragmento) del libro. Sin demasiada explicación — dejar que el texto respire. El otoño/invierno entrante armoniza con la intensidad del libro. Citar el vínculo con *Apocalypse Now* solo si suma al texto elegido.\n**Nota de imagen**: Placa tipográfica de estética oscura o cinematográfica. Fondo negro o gris profundo. Texto en serif blanco o crema. Contraste fuerte, atmósfera.\n**Hora sugerida**: 20:00 hs\n\n---\n\n### Jue 21 · 📖 Contenido\n\n**Libro/tema**: Proceso editorial (detrás de escena)\n**Descripción**: Contenido sobre el trabajo de editar: corrección, elección de tapa, comunicación con autores, llegada de los ejemplares impresos. Humaniza la editorial. El texto puede arrancar con algo como: \"Editar un libro no empieza con una idea. Empieza con una lectura muy lenta.\"\n**Nota de imagen**: Foto real del proceso (prueba de imprenta, mesa de trabajo, manuscrito anotado, etc.). Nada de stock. Autenticidad total.\n**Hora sugerida**: 19:00 hs\n\n---\n\n### 🎬 Reel — Semana 3\n\n**Idea**: \"Pasada por el catálogo\" — hojeando los libros del catálogo, mostrando el objeto: papel, encuadernación, ilustraciones. Sin texto, con música suave de fondo. Duración: 30–45 seg. Ideal para mostrar la calidad editorial y el cuidado del objeto libro.\n\n---\n\n## Semana 4 — 26 al 30 de mayo\n\n### Mar 26 · 🛒 CTA\n\n**Libro/tema**: Narrativa argentina / catálogo\n**Descripción**: CTA ligado al fin de semana largo del 25 de mayo. Tono: \"El finde largo es para leer algo argentino.\" Mostrar los títulos de narrativa argentina del catálogo (*El vendedor de libros*, *Dos tardes con Trini*, *Tiempo estimado de permanencia*, *Oficios varios*). Invitar a conseguirlos antes del feriado.\n**Nota de imagen**: Composición con los libros de narrativa. Puede ser apilados o en fila. Fondo cálido. Si hay foto con mate o escena de lectura en casa, suma.\n**Hora sugerida**: 19:00 hs (lunes 25 es feriado — publicar el 26 con energía post-feriado)\n\n---\n\n### Jue 28 · 📣 Presentación\n\n**Libro/tema**: *13 cuentos diminutos* — Melina Pogorelsky (il. Piper)\n**Descripción**: Presentación del libro álbum con foco en el otoño/invierno: es la estación de los cuentos en voz alta, las mantas y los libros ilustrados. Apelar a familias, docentes y bibliotecarios. La premisa del libro es perfecta: ¿cómo recordamos los cuentos de la infancia? Con las escenas justas.\n**Nota de imagen**: Foto del libro abierto mostrando las ilustraciones de Piper. Composición cálida, luz suave. O tapa sola sobre una manta o superficie textil que evoque invierno.\n**Hora sugerida**: 20:00 hs\n\n---\n\n### 📱 Story — Semana 4\n\n**Idea**: Recordatorio de libros disponibles + \"¿Ya tenés tu lectura de invierno?\" con sticker de encuesta (sí/no). Link en bio. Redirigir a quienes digan no hacia el catálogo.\n\n---\n\n## Notas del mes\n\n### Eventos y efemérides\n\n- **1° de mayo — Día del Trabajador**: La antología *Oficios varios* es el cruce perfecto. El post del martes 5 puede capitalizar ese eco de fin de semana largo.\n- **Feria Internacional del Libro de Buenos Aires (FIL BA)**: La FIL suele celebrarse a fines de abril / principios de mayo. **Confirmar si Buena Cosecha Editora tiene stand o participación en 2026**. Si es así, reorganizar las semanas 1 y 2 con posts de feria (anuncio previo, foto del stand, post de cierre) siguiendo el formato de Feria/Evento de `formatos-instagram.md`.\n- **25 de mayo — Día de la Patria**: Feriado nacional. El CTA del 26 aprovecha el fin de semana largo con el ángulo de \"literatura argentina\".\n\n### Libros con más actividad este mes\n\n1. **Oficios varios** — protagonista natural de mayo por el cruce con el Día del Trabajador. Potencial para contenido en serie (un post por oficio en meses siguientes).\n2. **Dos tardes con Trini** — narrativa urbana porteña, ideal para el otoño y para la audiencia de 25–45 años.\n3. **13 cuentos diminutos** — entrada de invierno = temporada alta para libros álbum y regalos para infancias.\n\n### Sugerencias de reels o contenido especial\n\n- **Reel \"¿Quién escribió qué?\"**: Los 10 autores de *Oficios varios* tienen cuentas de Instagram. Un reel presentando a cada uno (nombre + oficio sobre el que escribe) tiene alto potencial de alcance orgánico si etiquetan a sus propias comunidades.\n- **Serie \"Un oficio, una página\"**: Carrusel semanal con un fragmento de cada relato de *Oficios varios* + nombre del autor. Puede extenderse a lo largo de mayo y junio.\n- **Colaboración con autores**: Pedirle a Mario Méndez o Melina Pogorelsky un video corto (30 seg) leyendo un fragmento de su libro. Contenido de muy alto valor para la audiencia lectora.\n- **Post de FIL BA** (si corresponde): Foto del stand + texto sobre qué significa estar en la feria siendo una editorial independiente. Muy alineado con la identidad de la marca.\n",
+        "folder": "plan-mayo-2026"
+      }
+    ];
+
+    // ── Init ──────────────────────────────────────────────────────────────────────
+    let currentFilter = 'todos';
+
+    function init() {
+      document.getElementById('count-posts').textContent = POSTS.length;
+      document.getElementById('count-planes').textContent = PLANS.length;
+
+      const c = POSTS.filter(p => tipoClass(p.tipo) === 'contenido').length;
+      const pres = POSTS.filter(p => tipoClass(p.tipo) === 'presentacion').length;
+      const cta = POSTS.filter(p => tipoClass(p.tipo) === 'cta').length;
+      document.getElementById('stat-total').textContent = POSTS.length;
+      document.getElementById('stat-contenido').textContent = c;
+      document.getElementById('stat-presentacion').textContent = pres;
+      document.getElementById('stat-cta').textContent = cta;
+
+      renderPosts(POSTS);
+      renderPlans();
+
+      // Nav
+      document.querySelectorAll('[data-view]').forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          const v = a.dataset.view;
+          document.querySelectorAll('[data-view]').forEach(x => x.classList.remove('active'));
+          a.classList.add('active');
+          document.querySelectorAll('.view').forEach(x => x.classList.remove('active'));
+          document.getElementById('view-' + v).classList.add('active');
+        });
+      });
+
+      // Filtros tipo
+      document.querySelectorAll('.filter-link').forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          currentFilter = a.dataset.filter;
+          document.querySelectorAll('.filter-link').forEach(x => x.classList.remove('active'));
+          a.classList.add('active');
+          const filtered = currentFilter === 'todos' ? POSTS
+            : POSTS.filter(p => tipoClass(p.tipo) === currentFilter);
+          renderPosts(filtered);
+        });
+      });
+    }
+
+    function tipoClass(tipo) {
+      if (tipo.includes('Contenido')) return 'contenido';
+      if (tipo.includes('Presentaci')) return 'presentacion';
+      if (tipo.includes('CTA')) return 'cta';
+      return 'contenido';
+    }
+
+    // ── Render posts ──────────────────────────────────────────────────────────────
+    function renderPosts(posts) {
+      const grid = document.getElementById('posts-grid');
+      const empty = document.getElementById('posts-empty');
+
+      if (!posts.length) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      grid.innerHTML = posts.map((p, i) => {
+        const tc = tipoClass(p.tipo);
+        const preview = p.caption.replace(/[*_`]/g, '').substring(0, 140) + (p.caption.length > 140 ? '…' : '');
+        const date = p.fecha_human || p.fecha_iso || '';
+        const hora = p.hora ? ' · ' + p.hora : '';
+        return `<div class="post-card ${tc}" onclick="openPost(${POSTS.indexOf(p)})">
+      <div class="card-meta">
+        <span class="tipo-badge ${tc}">${p.tipo}</span>
+        <span class="card-date">${date}${hora}</span>
+      </div>
+      <div class="card-title">${escHtml(p.title.substring(0, 60))}</div>
+      ${p.libro ? `<div class="card-libro">${escHtml(p.libro)}</div>` : ''}
+      <div class="card-preview">${escHtml(preview)}</div>
+      <div class="card-footer">
+        ${p.hashtags.length ? `<span class="card-tags-count">#&nbsp;${p.hashtags.length} hashtags</span>` : ''}
+        ${p.stories.length ? `<span class="card-tags-count">📱 ${p.stories.length} stories</span>` : ''}
+        <span class="card-arrow">Ver completo →</span>
+      </div>
+    </div>`;
+      }).join('');
+    }
+
+    // ── Render plans ──────────────────────────────────────────────────────────────
+    function renderPlans() {
+      const list = document.getElementById('plan-list');
+      const empty = document.getElementById('planes-empty');
+      if (!PLANS.length) {
+        empty.style.display = 'block';
+        list.innerHTML = '';
+        return;
+      }
+      list.innerHTML = PLANS.map((p, i) => `
+    <div class="plan-card" onclick="openPlan(${i})">
+      <div class="plan-icon">📅</div>
+      <div class="plan-info">
+        <h3>${escHtml(p.title)}</h3>
+        <p>Calendario completo · carpeta: ${escHtml(p.folder)}</p>
+      </div>
+      <span class="plan-arrow">Ver →</span>
+    </div>
+  `).join('');
+    }
+
+    // ── Modal post ────────────────────────────────────────────────────────────────
+    function openPost(idx) {
+      const p = POSTS[idx];
+      const tc = tipoClass(p.tipo);
+
+      let html = `
+    <div class="modal-type-bar">
+      <span class="tipo-badge ${tc}">${p.tipo}</span>
+    </div>
+    <div class="modal-title">${escHtml(p.title)}</div>
+    ${p.libro ? `<div class="modal-libro">${escHtml(p.libro)}</div>` : ''}
+    <div class="modal-fecha">${p.fecha_human || p.fecha_iso || ''}${p.hora ? ' · ' + p.hora : ''}</div>
+  `;
+
+      // Caption
+      if (p.caption) {
+        html += `<div class="modal-section">
+      <div class="modal-section-label">Caption</div>
+      <div class="caption-box" id="caption-text-${idx}">${escHtml(p.caption)}</div>
+      <button class="copy-btn" onclick="copyText('caption-text-${idx}', this)">Copiar caption</button>
+    </div>`;
+      }
+
+      // Caption corto
+      if (p.caption_corto) {
+        html += `<div class="modal-section">
+      <div class="modal-section-label">Caption corto · Stories</div>
+      <div class="caption-short">${escHtml(p.caption_corto)}</div>
+    </div>`;
+      }
+
+      // Hashtags
+      if (p.hashtags.length) {
+        const tagsHtml = p.hashtags.map(h => `<span class="hashtag">${escHtml(h)}</span>`).join('');
+        html += `<div class="modal-section">
+      <div class="modal-section-label">Hashtags · ${p.hashtags.length}</div>
+      <div class="hashtag-cloud" id="hashtags-${idx}">${tagsHtml}</div>
+      <button class="copy-btn" onclick="copyHashtags(${idx}, this)">Copiar hashtags</button>
+    </div>`;
+      }
+
+      // Stories
+      if (p.stories.length) {
+        const storiesHtml = p.stories.map((s, i) => `
+      <div class="story-item">
+        <span class="story-n">0${i + 1}</span>
+        <span>${escHtml(s)}</span>
+      </div>`).join('');
+        html += `<div class="modal-section">
+      <div class="modal-section-label">Ideas de Stories</div>
+      <div class="stories-list">${storiesHtml}</div>
+    </div>`;
+      }
+
+      // Canva brief
+      const b = p.canva_brief;
+      if (Object.keys(b).length) {
+        const rows = [
+          ['Formato', b.formato],
+          ['Fondo', b.fondo],
+          ['Texto principal', b.texto_principal],
+          ['Mood', b.mood],
+        ].filter(([, v]) => v).map(([k, v]) =>
+          `<div class="brief-key">${k}</div><div class="brief-val">${escHtml(v)}</div>`
+        ).join('');
+        if (rows) {
+          html += `<div class="modal-section">
+        <div class="modal-section-label">Brief de Canva</div>
+        <div class="brief-grid">${rows}</div>
+      </div>`;
+        }
+      }
+
+      // DALL-E
+      if (p.dalle_prompt) {
+        html += `<div class="modal-section">
+      <div class="modal-section-label">Prompt para imagen (DALL-E)</div>
+      <div class="dalle-box" id="dalle-${idx}">${escHtml(p.dalle_prompt)}</div>
+      <button class="copy-btn" onclick="copyText('dalle-${idx}', this)">Copiar prompt</button>
+    </div>`;
+      }
+
+      document.getElementById('modal-body').innerHTML = html;
+      document.getElementById('modal-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function openPlan(idx) {
+      const plan = PLANS[idx];
+      const rendered = markdownToHtml(plan.texto);
+      const html = `
+    <div class="modal-title">${escHtml(plan.title)}</div>
+    <div class="modal-fecha">Calendario mensual</div>
+    <div class="plan-content">${rendered}</div>
+  `;
+      document.getElementById('modal-body').innerHTML = html;
+      document.getElementById('modal-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(e) {
+      if (e.target === document.getElementById('modal-overlay')) closeModalDirect();
+    }
+    function closeModalDirect() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalDirect(); });
+
+    // ── Copiar al portapapeles ────────────────────────────────────────────────────
+    function copyText(id, btn) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '¡Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = btn.textContent.replace('¡Copiado!', 'Copiar'); btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    function copyHashtags(idx, btn) {
+      const p = POSTS[idx];
+      const text = p.hashtags.join(' ');
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '¡Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.classList.remove('copied'); btn.textContent = 'Copiar hashtags'; }, 2000);
+      });
+    }
+
+    // ── Markdown básico → HTML ────────────────────────────────────────────────────
+    function markdownToHtml(md) {
+      return md
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+        .replace(/[*][*](.+?)[*][*]/g, '<strong>$1</strong>')
+        .replace(/[*](.+?)[*]/g, '<em>$1</em>')
+        .replace(/`(.+?)`/g, '<code>$1</code>')
+        .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+        .replace(/^---+$/gm, '<hr>')
+        .replace(/^[|](.+)[|]$/gm, m => {
+          const cells = m.slice(1, -1).split('|').map(c => c.trim());
+          return '<tr>' + cells.map(c => c.match(/^[-: ]+$/) ? '' : `<td>${c}</td>`).join('') + '</tr>';
+        })
+        .replace(/(<tr>.*<[/]tr>\n?)+/gs, t => `<table>${t}</table>`)
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<[/]li>\n?)+/gs, l => `<ul>${l}</ul>`)
+        .replace(/\n\n+/g, '</p><p>')
+        .replace(/^([^<\n].+)$/gm, '$1')
+        .replace(/<[/]p><p>/g, '</p>\n<p>')
+    }
+
+    function escHtml(s) {
+      if (!s) return '';
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
